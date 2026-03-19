@@ -21,7 +21,8 @@ def main():
     print("Iniciando Spark Session...")
     spark = SparkSession.builder \
         .appName("ENEM_ETL") \
-        .config("spark.jars", "/opt/spark/jars/mysql-connector-java-8.0.30.jar") \
+        .master("spark://spark-master:7077") \
+        .config("spark.jars.packages", "mysql:mysql-connector-java:8.0.30") \
         .config("spark.driver.memory", "4g") \
         .config("spark.executor.memory", "4g") \
         .getOrCreate()

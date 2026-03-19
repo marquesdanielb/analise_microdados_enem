@@ -13,21 +13,25 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql_data:/var/lib/mysql
 
-  etl:
-    build: .
-    container_name: enem_etl
-    depends_on:
-      - db
+  spark-master:
+    image: apache/spark:3.5.0
+    container_name: spark-master
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    ports:
+      - "8081:8080" 
+      - "7077:7077" 
     volumes:
       - ./dados:/app/dados
       - ./etl.py:/app/etl.py
-    environment:
-      - SPARK_HOME=/opt/spark
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_DB=enem_db
+
+  spark-worker:
+    image: apache/spark:3.5.0
+    container_name: spark-worker
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    volumes:
+      - ./dados:/app/dados
 
 volumes:
   mysql_data:
