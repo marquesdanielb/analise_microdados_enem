@@ -1,0 +1,14 @@
+# Data folders
+dados/
+mysql_data/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Docker
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
